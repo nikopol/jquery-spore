@@ -1,0 +1,33 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script src="spore.js"></script>
+	<script>
+		var api;
+		spore.debug(true);
+		var load=function(){
+			if(!api)
+				return spore.create('ihackernews.json',function(a){
+					api=a;
+					load();
+				});
+			api.askhn_posts({},function(d,r){
+				var u=$('#newslist').empty();
+				for(var n=0;n<d.items.length;n++) {
+					var i=d.items[n];
+					u.append('<li><a href="http://ihackernews.com'+i.url+'">'+i.title+'</a><br/>posted by '+i.postedBy+' '+i.postedAgo+'</li>');
+				}
+			},function(r){
+				ul.html('error');
+			});
+		};
+		$(document).ready(function(){
+			$('#butload').click(load);
+		});
+	</script>
+</head>
+<body>
+<h1>hacker news <input id="butload" type="button" value="load" /></h1>
+<ul id="newslist"></ul>
+</body>
+</html>
